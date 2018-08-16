@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
+import me.joeleoli.properfreeze.util.PlayerUtil;
 import me.mrten.commandannotations.CommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -29,6 +30,7 @@ public class ProperFreeze extends JavaPlugin {
 				ChatColor.RED + "Usage: {usage}",
 				ChatColor.RED + "Failed to execute that command."
 		);
+		this.commandHandler.addCommands(ProperFreeze.class);
 		this.frozenPlayers = new ArrayList<>();
 	}
 
@@ -50,11 +52,13 @@ public class ProperFreeze extends JavaPlugin {
 	 *
 	 * @return false if removed from the list, true if added to the list
 	 */
-	public boolean toggleFrozen(Player player) {
+	public boolean toggleFreeze(Player player) {
 		if (this.frozenPlayers.remove(player.getUniqueId())) {
+			PlayerUtil.allowMovement(player);
 			return false;
 		} else {
 			this.frozenPlayers.add(player.getUniqueId());
+			PlayerUtil.denyMovement(player);
 			return true;
 		}
 	}
