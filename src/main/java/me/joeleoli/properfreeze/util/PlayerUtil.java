@@ -1,10 +1,19 @@
 package me.joeleoli.properfreeze.util;
 
+import me.joeleoli.properfreeze.ProperFreeze;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class PlayerUtil {
+
+	public static void messageStaff(String message) {
+		ProperFreeze.getInstance().getServer().getOnlinePlayers().forEach(player -> {
+			if (player.hasPermission("properfreeze.staff")) {
+				player.sendMessage(message);
+			}
+		});
+	}
 
 	public static void denyMovement(Player player) {
 		player.setWalkSpeed(0.0F);
