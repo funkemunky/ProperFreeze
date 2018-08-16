@@ -20,10 +20,13 @@ public class FreezeCommand {
 		}
 
 		final boolean frozen = !ProperFreeze.getInstance().isFrozen(target);
+		final String context = frozen ? "frozen" : "unfrozen";
 
 		ProperFreeze.getInstance().setFrozen(target, frozen);
 		PlayerUtil.messageStaff(
-				Style.formatFreezeMessage(commandContext.getCommandSender(), target, frozen ? "frozen" : "unfrozen"));
+				Style.formatFreezeMessage(commandContext.getCommandSender(), target, context));
+
+		target.sendMessage(ChatColor.YELLOW + "You have been " + context + ".");
 	}
 
 }
