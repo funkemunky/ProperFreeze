@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
+import me.joeleoli.properfreeze.command.FreezeCommand;
+import me.joeleoli.properfreeze.listener.PlayerListener;
 import me.joeleoli.properfreeze.util.PlayerUtil;
 import me.mrten.commandannotations.CommandHandler;
 import org.bukkit.ChatColor;
@@ -30,12 +32,14 @@ public class ProperFreeze extends JavaPlugin {
 				ChatColor.RED + "Usage: {usage}",
 				ChatColor.RED + "Failed to execute that command."
 		);
-		this.commandHandler.addCommands(ProperFreeze.class);
+		this.commandHandler.addCommands(FreezeCommand.class);
 		this.frozenPlayers = new ArrayList<>();
+
+		this.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 	}
 
 	/**
-	 * Gets if the player is present in the frozen list.
+	 * Gets if the player is frozen.
 	 *
 	 * @param player the player
 	 *
@@ -46,30 +50,34 @@ public class ProperFreeze extends JavaPlugin {
 	}
 
 	/**
-	 * Removes a player from the frozen list if present, otherwise adds the player to the frozen list.
+	 * Freezes or unfreezes a player.
 	 *
 	 * @param player the player
-	 *
-	 * @return false if removed from the list, true if added to the list
+	 * @param frozen freeze the player
 	 */
-	public boolean toggleFreeze(Player player) {
-		if (this.frozenPlayers.remove(player.getUniqueId())) {
-			PlayerUtil.allowMovement(player);
-			return false;
-		} else {
+	public void setFrozen(Player player, boolean frozen) {
+		if (frozen) {
 			this.frozenPlayers.add(player.getUniqueId());
 			PlayerUtil.denyMovement(player);
-			return true;
+		} else {
+			this.frozenPlayers.remove(player.getUniqueId());
+			PlayerUtil.allowMovement(player);
 		}
 	}
 
 	/**
-	 * Tries to remove the player from the list.
+	 * Tries to unfreeze the player if frozen.
+	 * Used when players disconnect as their walk speed,
+	 * fly speed, and potion effects could possibly be
+	 * saved by the server (and will persist when they
+	 * reconnect).
 	 *
 	 * @param player the player
 	 */
 	public void clean(Player player) {
-		this.frozenPlayers.remove(player.getUniqueId());
+		if (this.frozenPlayers.remove(player.getUniqueId())) {
+			PlayerUtil.allowMovement(player);
+		}
 	}
 
 }

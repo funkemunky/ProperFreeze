@@ -19,9 +19,11 @@ public class FreezeCommand {
 			return;
 		}
 
-		boolean frozen = ProperFreeze.getInstance().toggleFreeze(target);
+		final boolean frozen = !ProperFreeze.getInstance().isFrozen(target);
 
-		PlayerUtil.messageStaff(Style.formatFreezeMessage(commandContext.getCommandSender(), target, frozen ? "frozen" : "unfrozen"));
+		ProperFreeze.getInstance().setFrozen(target, frozen);
+		PlayerUtil.messageStaff(
+				Style.formatFreezeMessage(commandContext.getCommandSender(), target, frozen ? "frozen" : "unfrozen"));
 	}
 
 }

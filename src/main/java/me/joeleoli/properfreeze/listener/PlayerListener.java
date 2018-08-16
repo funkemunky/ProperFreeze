@@ -16,11 +16,13 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		if (ProperFreeze.getInstance().isFrozen(event.getPlayer())) {
+		final Player player = event.getPlayer();
+
+		if (ProperFreeze.getInstance().isFrozen(player)) {
 			PlayerUtil.messageStaff(Style.formatDisconnectMessage(event.getPlayer()));
 		}
 
-		ProperFreeze.getInstance().clean(event.getPlayer());
+		ProperFreeze.getInstance().clean(player);
 	}
 
 	@EventHandler
