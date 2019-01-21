@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
@@ -23,6 +24,17 @@ public class PlayerListener implements Listener {
 		}
 
 		ProperFreeze.getInstance().clean(player);
+	}
+
+	/* We include an additional move event in case client developers get smart and send in a
+	   PacketPlayInAbilities packet to update their walk speed back to normal. */
+	@EventHandler
+	public void onEvent(PlayerMoveEvent event) {
+		final Player player = event.getPlayer();
+
+		if(ProperFreeze.getInstance().isFrozen(player)) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
